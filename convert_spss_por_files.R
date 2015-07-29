@@ -1,31 +1,34 @@
 # Converts a SPSS data file to a Stata data file
 
-#install.packages(c("Hmisc", "foreign"))
+# INSTALL PACKAGES
+# install.packages(c("Hmisc", "foreign", "memisc"))
 
 require(Hmisc)
 require(foreign)
-
-setwd("~/spss-converter/") # Set working directory
-
-fileName <- "yank8613.por" # Enter file name with .sav extension
-
-data <- spss.get(fileName, use.value.labels=TRUE) # This may take some time
-
-write.dta(data, sub(".por", ".dta", fileName)) # Will write .dta file with same fileName
-write.csv(data, sub(".por", ".dta", fileName)) # Will write .csv file with same fileName
-
-# If you get an error that reads like below:
-    # Error in read.spss(file, use.value.labels = use.value.labels, to.data.frame = to.data.frame,  : 
-    #                        error reading portable-file dictionary
-# Then do this:
-
-# install.packages("memisc")
 require(memisc)
 
-data <- as.data.set(spss.portable.file(fileName))
+# SET FILEPATH
+setwd("~/Desktop/spss-converter/") # Set working directory
+fileName <- "yank8613.por" # Enter file name with .sav extension
 
-write.dta(as.data.frame(data), sub(".por", ".dta", fileName)) # Will write .dta file with same fileName
-write.csv(as.data.frame(data), sub(".por", ".csv", fileName)) # Will write .csv file with same fileName
+# LOAD DATA AND CONVERT TO DATAFRAME
+pkg.env <- new.env()
+tryCatch(
+  {
+    pkg.env$data <- spss.get(fileName, use.value.labels=TRUE) # This may take some time
+  },
+  warning = function(war) {
+    print(war)
+    print ("Warning parsing .por file, trying again with memisc instead")
+    pkg.env$data <- as.data.frame(as.data.set(spss.portable.file(fileName))) # This may take some time
+ },
+  error = function(err) {
+    print (err)
+    print ("Error parsing .por file, trying again with memisc instead")
+    pkg.env$data <- as.data.frame(as.data.set(spss.portable.file(fileName))) # This may take some time
+  }
+)
 
-
-
+# WRITE AS DTA AND CSV
+write.dta(pkg.env$data, sub(".por", ".dta", fileName)) # Will write .dta file with same fileName
+write.csv(pkg.env$data, sub(".por", ".csv", fileName)) # Will write .csv file with same fileName
