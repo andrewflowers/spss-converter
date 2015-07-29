@@ -5,9 +5,9 @@
 require(Hmisc)
 require(foreign)
 
-setwd("~/Downloads") # Set working directory
+setwd("~/spss-converter/") # Set working directory
 
-fileName <- "aw5598.por" # Enter file name with .sav extension
+fileName <- "yank8613.por" # Enter file name with .sav extension
 
 data <- spss.get(fileName, use.value.labels=TRUE) # This may take some time
 
@@ -19,13 +19,13 @@ write.csv(data, sub(".por", ".dta", fileName)) # Will write .csv file with same 
     #                        error reading portable-file dictionary
 # Then do this:
 
-install.packages("memisc")
-library(memisc)
+# install.packages("memisc")
+require(memisc)
 
 data <- as.data.set(spss.portable.file(fileName))
 
 write.dta(as.data.frame(data), sub(".por", ".dta", fileName)) # Will write .dta file with same fileName
-write.csv(as.data.frame(data), sub(".por", ".dta", fileName)) # Will write .csv file with same fileName
+write.csv(as.data.frame(data), sub(".por", ".csv", fileName)) # Will write .csv file with same fileName
 
 
 
