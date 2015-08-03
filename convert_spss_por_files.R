@@ -8,8 +8,8 @@ require(foreign)
 require(memisc)
 
 # SET FILEPATH
-setwd("~/Desktop/spss-converter/") # Set working directory
-fileName <- "yank8613.por" # Enter file name with .sav extension
+setwd("~/spss-converter/") # Set working directory
+fileName <- "cnn2012002.por" # Enter file name with .sav extension
 
 # LOAD DATA AND CONVERT TO DATAFRAME
 pkg.env <- new.env()
